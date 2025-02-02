@@ -7,6 +7,15 @@ const routes: Routes = [
     path: 'tabs',
     component: TabsPage,
     children: [
+
+      {
+        path: 'prayer-time',
+        loadChildren: () => import('../pages/prayer-time/prayer-time.module').then( m => m.PrayerTimePageModule)
+      },
+      {
+        path: 'mosque',
+        loadChildren: () => import('../pages/mosque/mosque.module').then( m => m.MosquePageModule)
+      },
       {
         path: 'tab1',
         loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule)

@@ -5,6 +5,14 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
+  },
+  {
+    path: 'prayer-time',
+    loadChildren: () => import('./pages/prayer-time/prayer-time.module').then( m => m.PrayerTimePageModule)
+  },
+  {
+    path: 'mosque',
+    loadChildren: () => import('./pages/mosque/mosque.module').then( m => m.MosquePageModule)
   }
 ];
 @NgModule({
