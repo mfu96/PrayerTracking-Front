@@ -10,8 +10,8 @@ export class AppComponent {
   constructor() {}
 
   public appPages = [
-    { title: 'Prayer Time', url: '/tabs/prayer-time', icon: 'triangle' },
-    { title: 'Mosque', url: '/tabs/mosque', icon: 'ellipse' },
+    { title: 'Prayer Time', url: '/tabs/prayer-time', icon: 'assets/icon/mosque.svg', type:'svg' },
+    { title: 'Mosque', url: '/tabs/mosque', icon: 'assets/icon/mosque.svg', type:'svg' },
     { title: 'Tab 3', url: '/tabs/tab3', icon: 'square' },
     { title: 'Prayer', url: '/tabs/prayer', icon: 'square' },
     { title: 'Mosque', url: '/tabs/mosque', icon: 'ellipse' },

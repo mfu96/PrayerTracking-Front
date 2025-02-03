@@ -7,19 +7,30 @@
     <ion-menu contentId="main-content" type="overlay">
 
       <ion-content>
+
+
         <ion-list-header>
           Cami İşleri
         </ion-list-header>
-        
-        
+       
+
+        <ion-list>
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
             <ion-item routerDirection="root" [routerLink]="p.url" routerLinkActive="selected" detail="false">
-              <ion-icon slot="start" [name]="p.icon + '-outline'"></ion-icon>
+              <ng-container [ngSwitch]="p.type">
+                <!-- Ionic İkonları için -->
+                <ion-icon *ngSwitchCase="'ionic'" slot="start" [name]="p.icon + '-outline'"></ion-icon>
+                <!-- SVG İkonları için -->
+                <img *ngSwitchCase="'svg'" [src]="p.icon" slot="start" class="menu-icon" />
+                <!-- Varsayılan (Diğer) -->
+                <ion-icon *ngSwitchDefault slot="start" [name]="p.icon"></ion-icon>
+              </ng-container>
               <ion-label>
                 {{ p.title }}
               </ion-label>
             </ion-item>
           </ion-menu-toggle>
+        </ion-list>
 
           <ion-list-header>
             Account
