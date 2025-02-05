@@ -1,5 +1,7 @@
 {
   "name": "prayerTracking-Front",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }

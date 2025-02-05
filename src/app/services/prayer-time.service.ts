@@ -1,14 +1,15 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { ListResponseModel } from '../interfaces/responses/listResponseModel';
+import { Observable } from 'rxjs';
 import { PrayerTimeDetailDto } from '../interfaces/entities/prayerTimeDetailDto';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PrayerTimesService {
+export class PrayerTimeService {
+
   apiUrl=environment.apiUrl;
 
 
@@ -29,5 +30,6 @@ export class PrayerTimesService {
   
     return this.httpClient.get<ListResponseModel<PrayerTimeDetailDto>>(newPath);
   }
+
 
 }
