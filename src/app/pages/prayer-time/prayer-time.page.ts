@@ -170,29 +170,4 @@ export class PrayerTimePage implements OnInit {
 
   // Diğer fonksiyonlar (addFavorite, removeFavorite, openSocial, vb.) burada olabilir
 
- // QR Kod Tarayıcı Başlatma Fonksiyonu
- async startScan() {
-  try {
-    // Kamera izni iste
-    await BarcodeScanner.checkPermission({ force: true });
-
-    // Barkod taramayı başlat
-    await BarcodeScanner.hideBackground(); // Sayfa arkaplanını gizle
-    const result = await BarcodeScanner.startScan(); // Tarama işlemini başlat
-    
-    if (result.hasContent) {
-      console.log("Taranan barkod içeriği:", result.content);
-      this.processScannedData(result.content);
-    }
-  } catch (error) {
-    console.error("Tarama sırasında hata:", error);
-  } finally {
-    await BarcodeScanner.showBackground(); // Arkaplanı geri getir
-  }
-}
-
-processScannedData(scannedData: string) {
-  // Barkod içeriğine göre işlem yap
-  console.log(`İşlenen QR bilgisi: ${scannedData}`);
-}
 }

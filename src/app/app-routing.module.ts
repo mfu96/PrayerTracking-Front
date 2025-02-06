@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { QrComponent } from './components/qr/qr.component';
+
 
 const routes: Routes = [
   {
@@ -13,11 +15,18 @@ const routes: Routes = [
   {
     path: 'mosque',
     loadChildren: () => import('./pages/mosque/mosque.module').then( m => m.MosquePageModule)
+  },
+  {
+    path: 'qr',
+    component: QrComponent
   }
+ 
+
 ];
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+ 
   ],
   exports: [RouterModule]
 })

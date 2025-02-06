@@ -11,12 +11,15 @@ import { FormsModule } from '@angular/forms';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from 'src/environments/environment';
+import { CommonModule } from '@angular/common';
+import { QrComponent } from './components/qr/qr.component';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
      IonicModule.forRoot(),
+     CommonModule,
      IonicStorageModule.forRoot(),
 
       AppRoutingModule,
@@ -24,7 +27,9 @@ import { environment } from 'src/environments/environment';
      FormsModule,
      ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production
-    })
+    }),
+    QrComponent
+
     ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],

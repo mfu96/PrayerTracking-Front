@@ -7,14 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { PrayerTimePageRoutingModule } from './prayer-time-routing.module';
 
 import { PrayerTimePage } from './prayer-time.page';
+import { QrComponent } from "../../components/qr/qr.component";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    PrayerTimePageRoutingModule
-  ],
+    PrayerTimePageRoutingModule,
+    QrComponent
+],
   declarations: [PrayerTimePage]
 })
 export class PrayerTimePageModule {}
