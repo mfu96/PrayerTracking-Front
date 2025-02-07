@@ -34,6 +34,7 @@
     "@capacitor/status-bar": "7.0.0",
     "@ionic/angular": "^8.0.0",
     "@ionic/storage-angular": "^4.0.0",
+    "cordova-sqlite-storage": "^7.0.0",
     "install": "^0.13.0",
     "ionicons": "^7.0.0",
     "npm": "^10.9.2",

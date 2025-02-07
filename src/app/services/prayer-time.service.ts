@@ -4,6 +4,9 @@ import { environment } from 'src/environments/environment';
 import { ListResponseModel } from '../interfaces/responses/listResponseModel';
 import { Observable } from 'rxjs';
 import { PrayerTimeDetailDto } from '../interfaces/entities/prayerTimeDetailDto';
+import { ResponseModel } from '../interfaces/responses/responseModel';
+import { SingleResponseModel } from '../interfaces/responses/singleResponseModel';
+import { PrayerTime } from '../interfaces/entities/prayerTime';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +32,11 @@ export class PrayerTimeService {
 
   
     return this.httpClient.get<ListResponseModel<PrayerTimeDetailDto>>(newPath);
+  }
+
+  addPrayerTime(prayerData:PrayerTime):Observable<SingleResponseModel<PrayerTime>>{
+    return this.httpClient.post<SingleResponseModel<PrayerTime>>(this.apiUrl+ 'prayertimes/add', prayerData);
+
   }
 
 

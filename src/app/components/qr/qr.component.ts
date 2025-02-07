@@ -58,9 +58,31 @@ export class QrComponent implements AfterViewInit {
   }
 
   processScannedData(scannedData: string) {
-    // Barkod içeriğine göre işlem yap
-    console.log(`İşlenen QR bilgisi: ${scannedData}`);
-    // Örneğin, taranan veriye göre bir sayfaya yönlendirme yapabilirsiniz
-    // this.router.navigate(['/sonuc', { data: scannedData }]);
+    // Taranan veriyi parçalara ayır
+    const dataParts = scannedData.split(',');
+  
+    // Değişkenleri ata
+    const qrId = parseInt(dataParts[0]);
+    const mosqueId = parseInt(dataParts[1]);
+    const companyId = parseInt(dataParts[2]);
+    const generatedDate = dataParts[3]; // Format: dd-MM-yyyy
+  
+    // Çıkarılan değerleri logla
+    console.log(`QR ID: ${qrId}, Cami ID: ${mosqueId}, Şirket ID: ${companyId}, Oluşturma Tarihi: ${generatedDate}`);
+  
+    // Gönderilecek veriyi hazırla
+    const prayerData = {
+      prayerName: '', // Bunu sonraki adımda ayarlayacağız
+      mosqueId: mosqueId,
+      companyId: companyId,
+      currentLatitude: 37.778072231572885, // Şimdilik sabit değerler
+      currentLongitude: 29.034803952501058,
+      deviceId: 3,
+      userId: 105
+    };
+  
+    // prayer-add bileşenine, veriyi ileterek yönlendir
+    this.router.navigate(['/prayer-add'], { state: { prayerData } });
   }
+  
 }
