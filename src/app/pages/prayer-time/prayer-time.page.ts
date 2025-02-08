@@ -57,11 +57,21 @@ export class PrayerTimePage implements OnInit {
   ngOnInit() {
     this.getPrayerDetails();
     this.ios = this.platform.is('ios');
+    
   }
+
+
+
+ionViewWillEnter() {
+  // Sayfa her göründüğünde namaz vakitlerini güncelle
+  this.getPrayerDetails();
+}
 
   getPrayerDetails() {
     this.prayerService.getPrayerDetails().subscribe((response) => {
       this.prayerDetails = response.data;
+      this.showToast(response.message+ "Vakitler Listelendi")
+      console.log(response)
       this.updatePrayerGroups();
     });
   }
@@ -170,4 +180,13 @@ export class PrayerTimePage implements OnInit {
 
   // Diğer fonksiyonlar (addFavorite, removeFavorite, openSocial, vb.) burada olabilir
 
+
+  async showToast(message: string) {
+    const toast = document.createElement('ion-toast');
+    toast.message = message;
+    toast.duration = 2000;
+    toast.position = 'middle'; // 'top', 'middle' veya 'bottom'
+    document.body.appendChild(toast);
+    await toast.present();
+  }
 }

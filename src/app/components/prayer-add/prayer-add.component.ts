@@ -12,7 +12,8 @@ export class PrayerAddComponent implements OnInit {
 
   constructor(
   private router: Router,
-  private prayerService: PrayerTimeService) {
+  private prayerService: PrayerTimeService,
+) {
     const navigation = this.router.getCurrentNavigation();
     this.prayerData = navigation?.extras.state?.['prayerData'];
   }
@@ -69,7 +70,7 @@ export class PrayerAddComponent implements OnInit {
         // İsteğe bağlı olarak bir toast bildirimi göster
         this.showToast( response.message);
         // Anasayfaya yönlendir
-        this.router.navigate(['/']);
+        this.router.navigate(['/tabs/prayer-time']);  //buraya ayet hadise yönlendircek bir şey yap ki vakit detalyarı yüklenebilsin
       },
       error => {
         console.error('Namaz vakti eklenirken hata oluştu:', error.message);

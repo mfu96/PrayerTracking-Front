@@ -6,6 +6,8 @@ import { Storage } from '@ionic/storage-angular';
 import { LoginModel } from '../interfaces/entities/loginModel';
 import { SingleResponseModel } from '../interfaces/responses/singleResponseModel';
 import { TokenModel } from '../interfaces/tokenModel';
+import { from, Observable, of, switchMap, tap } from 'rxjs';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,24 +20,92 @@ export class AuthService {
   constructor(
     private httpClient: HttpClient,
     private storage: Storage,
-    /* Diğer servisler */
-  ) {
+    private userService:UserService
+    
+  ){
     this.init();
   }
-  
+
+  // Ionic Storage'ı başlatıyoruz
   async init() {
     await this.storage.create();
   }
 
 
-  // login(loginModel: LoginModel) {
-  //   return this.httpClient.post<SingleResponseModel<TokenModel>>(this.apiUrl + 'auth/login', loginModel)
-  //     .pipe(
-  //       tap(async (response) => {
-  //         await this.storage.set('token', response.data.token);
-  //         await this.storage.set('expiration', response.data.expiration);
-  //       })
-  //     );
-  // }
+  login(loginModel: LoginModel) {
+    return this.httpClient.post<SingleResponseModel<TokenModel>>(
+      this.apiUrl + 'auth/login',
+      loginModel
+    );
+  }
+
+  async isAuthenticated(): Promise<boolean> {
+    const token = await this.storage.get('token');
+    const expiration = await this.storage.get('expiration');
+
+    if (token && expiration) {
+      const now = new Date().getTime();
+      const exp = new Date(expiration).getTime();
+      return now < exp;
+    } else {
+      return false;
+    }
+  }
+
+  async logout() {
+    await this.storage.remove('token');
+    await this.storage.remove('expiration');
+    await this.storage.remove('loggedIn');
+    window.dispatchEvent(new Event('user:logout'));
+  }
+
+
+
+  setUser(email: string) {
+    this.userService.getByEmail(email).pipe(
+      tap(response => {
+        this.user = response.data;
+        console.info(this.user);
+      }),
+      // Kullanıcı bilgilerini depolamak için switchMap kullanıyoruz
+      switchMap(() => from(this.storage.set('fullName', `${this.user.firstName} ${this.user.lastName}`))),
+      switchMap(() => from(this.storage.set('email', this.user.email)))
+    ).subscribe({
+      next: () => {
+        // İşlemler tamamlandığında sayfayı yenileyebiliriz
+        window.location.reload();
+      },
+      error: (error) => {
+        console.error('Kullanıcı bilgileri alınırken bir hata oluştu:', error);
+        // Hata yönetimi yapabilirsiniz
+      }
+    });
+  }
+
+  async isAuthenticated_Eski(): Promise<boolean> {
+    const token = await this.storage.get('token');
+    if (token) {
+      return await this.checkTokenExpiration();
+    } else {
+      return false;
+    }
+  }
+  
+  async checkTokenExpiration(): Promise<boolean> {
+    const expiration = await this.storage.get('expiration');
+    if (expiration) {
+      const now = new Date().getTime();
+      const expirationDate = new Date(expiration).getTime();
+      return now < expirationDate;
+    }
+    return false;
+  }
+  
+
+
+  async getUserName(): Promise<string> {
+    const fullName = await this.storage.get('fullName');
+    return fullName || '';
+  }
   
 }

@@ -6,6 +6,7 @@ import { MenuController, Platform, ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 import { UserData } from './providers/user-data';
 import { Router } from '@angular/router';
+import { AuthService } from './services/auth.service';
 
 
 @Component({
@@ -39,12 +40,7 @@ export class AppComponent implements OnInit{
     private userData: UserData,
     private router: Router,
     private menu: MenuController,
-
-
-
-
-
-
+    private authService: AuthService,
 
 
   ) {
@@ -75,6 +71,7 @@ export class AppComponent implements OnInit{
         .then(() => this.swUpdate.activateUpdate())
         .then(() => window.location.reload());
     });
+    
   }
 
   initializeApp() {
@@ -87,7 +84,10 @@ export class AppComponent implements OnInit{
   }
 
   checkLoginStatus() {
-    return this.userData.isLoggedIn().then(loggedIn => {
+    let log= this.authService.isAuthenticated();
+    console.log(log)
+    
+    return log.then(loggedIn => {
       return this.updateLoggedInStatus(loggedIn);
     });
   }
@@ -96,6 +96,19 @@ export class AppComponent implements OnInit{
     setTimeout(() => {
       this.loggedIn = loggedIn;
     }, 300);
+  }
+
+    async isAuthenticated(): Promise<boolean> {
+    const token = await this.storage.get('token');
+    const expiration = await this.storage.get('expiration');
+
+    if (token && expiration) {
+      const now = new Date().getTime();
+      const exp = new Date(expiration).getTime();
+      return now < exp;
+    } else {
+      return false;
+    }
   }
 
   listenForLoginEvents() {
@@ -113,8 +126,9 @@ export class AppComponent implements OnInit{
   }
 
   logout() {
-    this.userData.logout().then(() => {
-      return this.router.navigateByUrl('/app/tabs/schedule');
+
+    this.authService.logout().then(() => {
+      return this.router.navigate(['/app/tabs/mosque']);
     });
   }
 

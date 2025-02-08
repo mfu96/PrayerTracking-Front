@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, NgForm } from '@angular/forms';
+import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+
 import { Storage } from '@ionic/storage-angular';
-import { UserOptions } from 'src/app/interfaces/user-options';
-import { UserData } from 'src/app/providers/user-data';
+import { LoginModel } from 'src/app/interfaces/entities/loginModel';
+
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -12,42 +13,50 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./login.page.scss'],
   standalone:false
 })
-export class LoginPage implements OnInit {
+export class LoginPage  {
+  login: LoginModel = { email: '', password: '' };
 
-  loginForm: FormGroup | undefined;
-  currentCustomerEmail: string = "";
-
-
-
-  login: UserOptions = { username: '', password: '' };
-  submitted = false;
 
   constructor(
-    public userData: UserData,
-    public router: Router,
     private authService: AuthService,
-    private storage :Storage
-  ) { }
+    private storage: Storage,
+    private router:Router
 
-
-  ngOnInit(): void {
-   // this.ceratedLoginForm();
-    
+  ) {
+    this.initStorage();
   }
 
-
-
+  async initStorage() {
+    await this.storage.create();
+  }
 
   onLogin(form: NgForm) {
-    this.submitted = true;
-
     if (form.valid) {
-      this.userData.login(this.login.username);
-      this.router.navigateByUrl('/app/tabs/schedule');
+      this.authService.login(this.login).subscribe(
+        (response) => {
+          if (response.success) {
+            // Token ve expiration bilgilerini sakla
+            this.storage.set('token', response.data.token);
+            this.storage.set('expiration', response.data.expiration);
+            this.storage.set('loggedIn', true)
+            this.router.navigate(['/'])
+            window.dispatchEvent(new Event('user:login'));
+
+            // Giriş başarılı olduğunda yapılacak işlemler
+            console.log('Giriş başarılı!');
+          } else {
+            console.log('Giriş başarısız:', response.message);
+          }
+        },
+        (error) => {
+          console.log('Hata:', error);
+        }
+      );
     }
   }
+  
 
   onSignup() {
-    this.router.navigateByUrl('/signup');
+    // Kayıt ol sayfasına yönlendirme veya işlemler
   }
 }
