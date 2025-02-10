@@ -55,7 +55,7 @@ export class PrayerTimePage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getPrayerDetails();
+    this.getPrayerUserDetail();
     this.ios = this.platform.is('ios');
     
   }
@@ -64,8 +64,21 @@ export class PrayerTimePage implements OnInit {
 
 ionViewWillEnter() {
   // Sayfa her göründüğünde namaz vakitlerini güncelle
-  this.getPrayerDetails();
+  this.getPrayerUserDetail();
+  //this.getPrayerDetails();
 }
+
+getPrayerUserDetail(){
+  this.prayerService.getPrayerByUserDetail().subscribe((response) => {
+    this.prayerDetails=response.data
+    this.showToast(response.message+ "Vakitler Listelendi")
+    console.log(response)
+    this.updatePrayerGroups();
+  });
+}
+
+
+
 
   getPrayerDetails() {
     this.prayerService.getPrayerDetails().subscribe((response) => {

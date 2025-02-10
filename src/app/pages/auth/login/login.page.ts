@@ -31,6 +31,7 @@ export class LoginPage  {
   }
 
   onLogin(form: NgForm) {
+
     if (form.valid) {
       this.authService.login(this.login).subscribe(
         (response) => {
@@ -39,6 +40,7 @@ export class LoginPage  {
             this.storage.set('token', response.data.token);
             this.storage.set('expiration', response.data.expiration);
             this.storage.set('loggedIn', true)
+            this.authService.setUser(this.login.email)
             this.router.navigate(['/'])
             window.dispatchEvent(new Event('user:login'));
 

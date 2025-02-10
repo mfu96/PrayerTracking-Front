@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { QrComponent } from './components/qr/qr.component';
 import { PrayerAddComponent } from './components/prayer-add/prayer-add.component';
+import { LoginGuard } from './guards/login.guard';
 
 
 const routes: Routes = [
@@ -19,12 +20,14 @@ const routes: Routes = [
   },
   {
     path: 'qr',
-    component: QrComponent
+    component: QrComponent,
+    canActivate:[LoginGuard]
   },
   {
     path: 'prayer-add',
     component: PrayerAddComponent
-  },  {
+  },
+  {
     path: 'login',
     loadChildren: () => import('./pages/auth/login/login.module').then( m => m.LoginPageModule)
   }

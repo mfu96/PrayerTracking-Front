@@ -128,7 +128,7 @@ export class AppComponent implements OnInit{
   logout() {
 
     this.authService.logout().then(() => {
-      return this.router.navigate(['/app/tabs/mosque']);
+      return this.router.navigate(['/tabs/mosque']);
     });
   }
 

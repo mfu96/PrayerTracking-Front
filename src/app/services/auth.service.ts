@@ -15,7 +15,7 @@ import { UserService } from './user.service';
 export class AuthService {
 
   apiUrl =environment.apiUrl;
-  user!: User;
+  user: User;
 
   constructor(
     private httpClient: HttpClient,
@@ -48,7 +48,7 @@ export class AuthService {
       const exp = new Date(expiration).getTime();
       return now < exp;
     } else {
-      return false;
+      return false && this.logout;
     }
   }
 
@@ -56,12 +56,41 @@ export class AuthService {
     await this.storage.remove('token');
     await this.storage.remove('expiration');
     await this.storage.remove('loggedIn');
+    await this.storage.remove('fullName');
+    await this.storage.remove('email');
+    await this.storage.remove('userId');
+
+
     window.dispatchEvent(new Event('user:logout'));
   }
 
+  // auth.service.ts
+setUser(email: string) {
+  //console.log('setUser çağırıldı, email:', email);
+  this.userService.getByEmail(email).subscribe(
+    (response) => {
+      if (response && response.data) {
+        this.user = response.data;
+       //console.info(this.user);
+        this.storage.set("fullName", `${this.user.firstName} ${this.user.lastName}`);
+        this.storage.set("email", this.user.email);
+        this.storage.set("userId", this.user.userId); // Kullanıcı ID'sini saklıyoruz
+      } else {
+        console.error('Kullanıcı verisi alınamadı.');
+        
+      }
+    },
+    (error) => {
+      console.error('getByEmail hatası:', error);
+    }
+  );
+}
+
+  
 
 
-  setUser(email: string) {
+
+  setUser_eski(email: string) {
     this.userService.getByEmail(email).pipe(
       tap(response => {
         this.user = response.data;

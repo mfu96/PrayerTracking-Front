@@ -25,6 +25,13 @@ export class PrayerTimeService {
   
     return this.httpClient.get<ListResponseModel<PrayerTimeDetailDto>>(newPath);
   }  
+  getPrayerByUserDetail():Observable<ListResponseModel<PrayerTimeDetailDto>>{
+
+    let newPath = this.apiUrl + 'prayertimes/getbyuser';
+
+  
+    return this.httpClient.get<ListResponseModel<PrayerTimeDetailDto>>(newPath);
+  }  
   
   getPrayerDetails():Observable<ListResponseModel<PrayerTimeDetailDto>>{
 

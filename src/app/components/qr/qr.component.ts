@@ -77,8 +77,8 @@ export class QrComponent implements AfterViewInit {
       companyId: companyId,
       currentLatitude: 37.778072231572885, // Şimdilik sabit değerler
       currentLongitude: 29.034803952501058,
-      deviceId: 3,
-      userId: 105
+      deviceId: 3
+     
     };
   
     // prayer-add bileşenine, veriyi ileterek yönlendir
