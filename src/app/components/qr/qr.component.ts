@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 import { IonicModule } from '@ionic/angular';
+import { LocationService } from 'src/app/services/location.service';
 
 @Component({
   selector: 'app-qr',
@@ -13,15 +14,27 @@ import { IonicModule } from '@ionic/angular';
   ],
   styleUrls: ['./qr.component.scss'],
 })
-export class QrComponent implements AfterViewInit {
+export class QrComponent implements AfterViewInit, OnDestroy {
   scanning = false;
 
   constructor(
-    private router: Router
+    private router: Router,
+    private locationService: LocationService
   ) { }
 
-  ngAfterViewInit() {
-    this.startScan();
+
+ngAfterViewInit() {
+  // Konum izlemeyi başlat
+  this.locationService.startTracking();
+
+  // QR taramasını başlat
+  this.startScan();
+
+}
+
+  ngOnDestroy() {
+    // Bileşen yok edilirken konum izlemeyi durdur
+    this.locationService.stopTracking();
   }
 
   async startScan() {
@@ -75,8 +88,8 @@ export class QrComponent implements AfterViewInit {
       prayerName: '', // Bunu sonraki adımda ayarlayacağız
       mosqueId: mosqueId,
       companyId: companyId,
-      currentLatitude: 37.778072231572885, // Şimdilik sabit değerler
-      currentLongitude: 29.034803952501058,
+      //currentLatitude: 37.778072231572885, // Şimdilik sabit değerler
+     // currentLongitude: 29.034803952501058,
       deviceId: 3
      
     };
