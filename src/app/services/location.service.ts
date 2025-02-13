@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Geolocation } from '@capacitor/geolocation';
-import { GeolocationPosition } from '@capacitor/geolocation';
+import { Geolocation, Position } from '@capacitor/geolocation';
 
 
 @Injectable({
@@ -12,7 +11,7 @@ export class LocationService {
   
 
   // Kullanıcıların abone olabileceği konum konusu
-  private locationSubject = new BehaviorSubject<GeolocationPosition | null>(null);
+  private locationSubject = new BehaviorSubject<Position | null>(null);
   location$ = this.locationSubject.asObservable();
 
   // Konum izleme işlemi için ID
@@ -35,14 +34,15 @@ export class LocationService {
       };
 
       // Konum izlemeye başla
-      this.watchId = await Geolocation.watchPosition(options, (position, err) => {
+      this.watchId = await Geolocation.watchPosition(options, (position: Position | null, err) => {
         if (position) {
-          // Yeni konum bilgisini yayınla
+          console.log('Konum alındı:', position);
           this.locationSubject.next(position);
         } else if (err) {
           console.error('Konum alma hatası:', err);
         }
       });
+      
     } else {
       console.error('Konum izni verilmedi.');
     }
@@ -57,11 +57,9 @@ export class LocationService {
     }
   }
 
-  public getCurrentLocation(): GeolocationPosition | null {
-    console.log(this.locationSubject.getValue())
-    console.log(this.locationSubject)
+  public getCurrentLocation(): Position | null {
     return this.locationSubject.getValue();
-
   }
+  
   
 }

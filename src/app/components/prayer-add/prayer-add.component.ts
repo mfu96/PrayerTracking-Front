@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Position } from '@capacitor/geolocation';
 import { IonicModule } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { LocationService } from 'src/app/services/location.service';
@@ -58,17 +59,23 @@ export class PrayerAddComponent implements OnInit, OnDestroy {
   }
 
   subscribeToLocation() {
-    // Konum servisindeki değişiklikleri dinle
-    this.locationSubscription = this.locationService.location$.subscribe(position => {
-      if (position) {
-        const coords = position.coords;
-        this.currentAccuracy = coords.accuracy;
-        this.locationStatus = `Konum doğruluğu: ${this.currentAccuracy.toFixed(2)} metre`;
+    this.locationSubscription = this.locationService.location$.subscribe(
+      (position: Position | null) => {
+        if (position) {
+          const coords = position.coords;
+          this.currentAccuracy = coords.accuracy;
+          this.locationStatus = `Konum doğruluğu: ${this.currentAccuracy.toFixed(2)} metre`;
 
-        // Doğruluk 50 metreden az ise gönderime izin ver
-        this.canSubmit = this.currentAccuracy <= 50;
+          console.log('Güncel konum:', coords);
+
+          this.canSubmit = this.currentAccuracy <= 50;
+        }
+      },
+      error => {
+        this.locationStatus = 'Konum izni verilmedi.';
+        this.canSubmit = false;
       }
-    });
+    );
   }
 
   async selectPrayerName() {
