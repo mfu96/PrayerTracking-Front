@@ -12,7 +12,7 @@ const routes: Routes = [
       {
         path: 'prayer-time',
         loadChildren: () => import('../pages/prayer-time/prayer-time.module').then( m => m.PrayerTimePageModule),
-        canActivate:[LoginGuard]
+        // canActivate:[LoginGuard]
       },
       {
         path: 'mosque',

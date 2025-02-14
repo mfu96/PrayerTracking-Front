@@ -14,6 +14,7 @@ import { environment } from 'src/environments/environment';
 import { CommonModule } from '@angular/common';
 import { QrComponent } from './components/qr/qr.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
 
 @NgModule({
   declarations: [AppComponent],
@@ -29,7 +30,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
      ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production
     }),
-    QrComponent
+    QrComponent,
+    ZXingScannerModule
 
     ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

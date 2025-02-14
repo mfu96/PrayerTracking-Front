@@ -21,7 +21,7 @@ const routes: Routes = [
   {
     path: 'qr',
     component: QrComponent,
-    canActivate:[LoginGuard]
+    // canActivate:[LoginGuard]
   },
   {
     path: 'prayer-add',

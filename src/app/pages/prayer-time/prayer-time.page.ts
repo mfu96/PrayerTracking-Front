@@ -8,7 +8,6 @@ import { Mosque } from '../../interfaces/entities/mosque';
 import { MosqueService } from '../../services/mosque.service';
 import { PrayerTimeDetailDto } from '../../interfaces/entities/prayerTimeDetailDto';
 import { PrayerTimeService } from 'src/app/services/prayer-time.service';
-import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 
 @Component({
   selector: 'app-prayer-time',

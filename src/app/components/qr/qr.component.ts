@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, Platform } from '@ionic/angular';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { LocationService } from 'src/app/services/location.service';
 
 @Component({
@@ -10,92 +10,97 @@ import { LocationService } from 'src/app/services/location.service';
   templateUrl: './qr.component.html',
   imports: [
     CommonModule,
-    IonicModule // IonicModule'ü buraya ekliyoruz
+    IonicModule, // IonicModule'ü buraya ekliyoruz
+    ZXingScannerModule
   ],
   styleUrls: ['./qr.component.scss'],
 })
-export class QrComponent implements AfterViewInit, OnDestroy {
+export class QrComponent implements OnInit, OnDestroy {
   scanning = false;
+  availableDevices: MediaDeviceInfo[] = [];
+  currentDevice: MediaDeviceInfo | undefined;
 
   constructor(
     private router: Router,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private platform: Platform
   ) { }
 
-
-ngAfterViewInit() {
-  // Konum izlemeyi başlat
-  this.locationService.startTracking();
-
-  // QR taramasını başlat
-  this.startScan();
-
-}
-
+  ngOnInit() {
+    // Konum izlemeyi başlat
+    this.locationService.startTracking();
+  
+    // Platform hazır olduğunda izin iste
+    this.platform.ready().then(() => {
+      this.requestCameraPermission();
+    });
+  }
+  
+  async requestCameraPermission() {
+    const status = await navigator.mediaDevices.getUserMedia({ video: true })
+      .then(() => {
+        console.log('Kamera izni verildi.');
+      })
+      .catch((error) => {
+        console.error('Kamera izni reddedildi.', error);
+        // Uygulamadan çıkabilir veya alternatif bir işlem yapabilirsiniz
+      });
+  }
   ngOnDestroy() {
-    // Bileşen yok edilirken konum izlemeyi durdur
+    // Konum izlemeyi durdur
     this.locationService.stopTracking();
   }
+// Kamera cihazlarını alır ve arka kamerayı seçer
+  onCamerasFound(devices: MediaDeviceInfo[]): void {
+    this.availableDevices = devices;
 
-  async startScan() {
-    try {
-      // Kamera izni iste
-      const permission = await BarcodeScanner.checkPermission({ force: true });
-      if (!permission.granted) {
-        console.log("Kamera izni verilmedi.");
-        return;
+    for (const device of devices) {
+      if (/back|rear|environment/gi.test(device.label)) {
+        this.currentDevice = device;
+        break;
       }
-
-      this.scanning = true;
-
-      // Tarama işlemini başlat
-      const result = await BarcodeScanner.startScan();
-
-      if (result.hasContent) {
-        console.log("Taranan barkod içeriği:", result.content);
-        this.processScannedData(result.content);
-      } else {
-        console.log("Herhangi bir içerik bulunamadı.");
-      }
-    } catch (error) {
-      console.error("Tarama sırasında hata:", error);
-    } finally {
-      await BarcodeScanner.showBackground(); // Arkaplanı geri getir
-
-      this.router.navigate(['/'])
-      this.scanning = false;
-      
-
-      // Tarama işlemi bittiğinde gerekirse ek işlemler yapabilirsiniz
     }
+
+    // Eğer arka kamera bulunmazsa ilk cihazı seç
+    if (!this.currentDevice && devices.length > 0) {
+      this.currentDevice = devices[0];
+    }
+  }
+
+  // Tarama başarılı olduğunda çalışır
+  onCodeResult(resultString: string) {
+    console.log('Taranan barkod içeriği:', resultString);
+    this.processScannedData(resultString);
   }
 
   processScannedData(scannedData: string) {
     // Taranan veriyi parçalara ayır
     const dataParts = scannedData.split(',');
-  
+
+    if (dataParts.length < 4) {
+      console.log('Geçersiz QR kodu');
+      return;
+    }
+
     // Değişkenleri ata
-    const qrId = parseInt(dataParts[0]);
-    const mosqueId = parseInt(dataParts[1]);
-    const companyId = parseInt(dataParts[2]);
+    const qrId = parseInt(dataParts[0], 10);
+    const mosqueId = parseInt(dataParts[1], 10);
+    const companyId = parseInt(dataParts[2], 10);
     const generatedDate = dataParts[3]; // Format: dd-MM-yyyy
-  
+
     // Çıkarılan değerleri logla
     console.log(`QR ID: ${qrId}, Cami ID: ${mosqueId}, Şirket ID: ${companyId}, Oluşturma Tarihi: ${generatedDate}`);
-  
+
     // Gönderilecek veriyi hazırla
     const prayerData = {
       prayerName: '', // Bunu sonraki adımda ayarlayacağız
       mosqueId: mosqueId,
       companyId: companyId,
-      //currentLatitude: 37.778072231572885, // Şimdilik sabit değerler
-     // currentLongitude: 29.034803952501058,
       deviceId: 3
-     
     };
-  
-    // prayer-add bileşenine, veriyi ileterek yönlendir
+
+    // prayer-add bileşenine yönlendir
     this.router.navigate(['/prayer-add'], { state: { prayerData } });
   }
-  
+
 }
