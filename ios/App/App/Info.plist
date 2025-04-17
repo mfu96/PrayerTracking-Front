@@ -44,11 +44,15 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<key>NSCameraUsageDescription</key>
+	<string>Kare Kodu taramak için Kameranızıa erişmemiz gerek!</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Vaktin eklenebilmesi için konum bilgisine erişmemeiz gerek!</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Vaktin eklenebilmesi için konum bilgisine erişmemeiz gerek!</string>
+	<key>NSAppTransportSecurity</key>
+	
 	<true/>
-		<key>NSCameraUsageDescription</key>
-		<string>Barkod taraması için kamera izni gerekli.</string>
-		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>Uygulamayı kullanırken konumunuza erişmek istiyoruz.</string>
-
 </dict>
 </plist>
+
